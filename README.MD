@@ -1,4 +1,4 @@
-# CXX and Corrosion in CMake project example
+# Using [CXX](https://cxx.rs/) and [Corrosion](https://github.com/corrosion-rs/corrosion) in CMake project example
 
 This is a fork of the [rusty_cmake](https://github.com/trondhe/rusty_cmake) repository with the following modifications:
 
