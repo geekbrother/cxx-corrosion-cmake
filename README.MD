@@ -3,6 +3,7 @@
 This is a fork of the [rusty_cmake](https://github.com/trondhe/rusty_cmake) repository with the following modifications:
 
  - Cargo target automatically architecture detection.
+ - Windows-related code is removed.
  - Simplify by using a simple one CMakeLists file.
  - Example of using a different type for arguments and returns.
  - Example of using panics in Rust + C++.
