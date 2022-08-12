@@ -1,0 +1,21 @@
+[package]
+name = "rusty_code"
+version = "0.1.0"
+authors = ["Trond H Emaus <trondhe@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+cxx = "1.0"
+
+[build-dependencies]
+cxx-build = "1.0"
+
+[lib]
+crate-type = ["staticlib"]
+
+[profile.release]
+debug = true
+panic = "abort"
+
+[profile.dev]
+panic = "abort"
