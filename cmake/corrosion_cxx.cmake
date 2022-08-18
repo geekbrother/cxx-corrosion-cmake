@@ -1,8 +1,9 @@
+# Detects cargo target architecture based on the Rustc compiler version
 function(detect_cargo_target_architecture)
-    find_program(Rust_COMPILER rustc)
+    find_program(RUST_compiler rustc)
     find_program(Sed_PATH sed)
 
-    if(NOT Rust_COMPILER)
+    if(NOT RUST_compiler)
         message(
             FATAL "The rustc executable was not found")
     endif()
@@ -13,96 +14,102 @@ function(detect_cargo_target_architecture)
     endif()
 
     execute_process(
-        COMMAND ${Rust_COMPILER} --version --verbose
+        COMMAND ${RUST_compiler} --version --verbose
         COMMAND ${Sed_PATH} -n "s|host: ||p"
         OUTPUT_VARIABLE DETECTED_CARGO_TARGET
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
 
     if("${DETECTED_CARGO_TARGET}" STREQUAL "")
         message(FATAL_ERROR "Cannot detect target architecture for cargo build")
     endif()
 
     message("Cargo target architecture detected as: ${DETECTED_CARGO_TARGET}")
-    set(Rust_CARGO_TARGET ${DETECTED_CARGO_TARGET} PARENT_SCOPE)
+    set(RUST_cargo_target ${DETECTED_CARGO_TARGET} PARENT_SCOPE)
 endfunction(detect_cargo_target_architecture)
 
+# Creates a target including rust lib and cxxbridge which is
+# named as ${NAMESPACE}::${_LIB_PATH_STEM}
+# <_LIB_PATH_STEM> must match the crate name:
+# "path/to/myrustcrate" -> "libmyrustcrate.a"
 function(add_library_rust)
     detect_cargo_target_architecture()
-    set(ONE_VALUE_KEYWORDS PATH NAMESPACE CXX_BRIDGE_SOURCE_FILE)
+    set(value_keywords PATH NAMESPACE CXX_BRIDGE_SOURCE_FILE)
     cmake_parse_arguments(
-        _RUST_LIB
+        rust_lib
         "${OPTIONS}"
-        "${ONE_VALUE_KEYWORDS}"
-        "${MULTI_VALUE_KEYWORDS}"
-        ${ARGN})
+        "${value_keywords}"
+        "${MULTI_value_KEYWORDS}"
+        ${ARGN}
+    )
 
-    if("${_RUST_LIB_PATH}" STREQUAL "")
+    if("${rust_lib_PATH}" STREQUAL "")
         message(
             FATAL_ERROR
             "add_library_rust called without a given path to root of a rust crate")
     endif()
 
-    if("${_RUST_LIB_NAMESPACE}" STREQUAL "")
+    if("${rust_lib_NAMESPACE}" STREQUAL "")
         message(
             FATAL_ERROR
             "Must supply a namespace given by keyvalue NAMESPACE <value>")
     endif()
 
-    if("${_RUST_LIB_CXX_BRIDGE_SOURCE_FILE}" STREQUAL "")
-        set(_RUST_LIB_CXX_BRIDGE_SOURCE_FILE "src/lib.rs")
+    if("${rust_lib_CXX_BRIDGE_SOURCE_FILE}" STREQUAL "")
+        set(rust_lib_CXX_BRIDGE_SOURCE_FILE "src/lib.rs")
     endif()
 
-    if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/${_RUST_LIB_PATH}/Cargo.toml")
+    if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/${rust_lib_PATH}/Cargo.toml")
         message(
             FATAL_ERROR
-            "${CMAKE_CURRENT_LIST_DIR}/${_RUST_LIB_PATH} does not contain a Cargo.toml")
+            "${CMAKE_CURRENT_LIST_DIR}/${rust_lib_PATH} doesn't contain a Cargo.toml")
     endif()
 
-    set(_LIB_PATH ${_RUST_LIB_PATH})
-    set(_NAMESPACE ${_RUST_LIB_NAMESPACE})
-    set(_CXX_BRIDGE_SOURCE_FILE ${_RUST_LIB_CXX_BRIDGE_SOURCE_FILE})
+    set(lib_path ${rust_lib_PATH})
+    set(namespace ${rust_lib_NAMESPACE})
+    set(cxx_bridge_source_file ${rust_lib_CXX_BRIDGE_SOURCE_FILE})
 
-    corrosion_import_crate(MANIFEST_PATH "${_LIB_PATH}/Cargo.toml")
+    corrosion_import_crate(MANIFEST_PATH "${lib_path}/Cargo.toml")
 
     # Set cxxbridge values
-    _get_stem_name_of_path(PATH ${_LIB_PATH})
-    set(_LIB_PATH_STEM ${STEM_OF_PATH})
-
+    get_filename_component(_LIB_PATH_STEM ${lib_path} NAME)
+    message(STATUS "Library stem path: ${_LIB_PATH_STEM}")
     set(
-        CXXBRIDGE_BINARY_FOLDER
-        ${CMAKE_BINARY_DIR}/cargo/build/${Rust_CARGO_TARGET}/cxxbridge)
+        cxx_bridge_binary_folder
+        ${CMAKE_BINARY_DIR}/cargo/build/${RUST_cargo_target}/cxxbridge)
     set(
-        COMMON_HEADER
-        ${CXXBRIDGE_BINARY_FOLDER}/rust/cxx.h)
+        common_header
+        ${cxx_bridge_binary_folder}/rust/cxx.h)
     set(
-        BINDING_HEADER
-        ${CXXBRIDGE_BINARY_FOLDER}/${_LIB_PATH_STEM}/${_CXX_BRIDGE_SOURCE_FILE}.h)
+        binding_header
+        ${cxx_bridge_binary_folder}/${_LIB_PATH_STEM}/${cxx_bridge_source_file}.h)
     set(
-        BINDING_SOURCE
-        ${CXXBRIDGE_BINARY_FOLDER}/${_LIB_PATH_STEM}/${_CXX_BRIDGE_SOURCE_FILE}.cc)
+        binding_source
+        ${cxx_bridge_binary_folder}/${_LIB_PATH_STEM}/${cxx_bridge_source_file}.cc)
     set(
-        CXX_BINDING_INCLUDE_DIR
-        ${CXXBRIDGE_BINARY_FOLDER})
+        cxx_binding_include_dir
+        ${cxx_bridge_binary_folder})
 
     # Create cxxbridge target
     add_custom_command(
-        DEPENDS ${_LIB_PATH_STEM}-static
         OUTPUT
-        ${COMMON_HEADER}
-        ${BINDING_HEADER}
-        ${BINDING_SOURCE}
+        ${common_header}
+        ${binding_header}
+        ${binding_source}
+        COMMAND
+        DEPENDS ${_LIB_PATH_STEM}-static
+        COMMENT "Fixing cmake to find source files"
     )
 
     add_library(${_LIB_PATH_STEM}_cxxbridge)
     target_sources(${_LIB_PATH_STEM}_cxxbridge
         PUBLIC
-        ${COMMON_HEADER}
-        ${BINDING_HEADER}
-        ${BINDING_SOURCE}
+        ${common_header}
+        ${binding_header}
+        ${binding_source}
     )
     target_include_directories(${_LIB_PATH_STEM}_cxxbridge
-        PUBLIC
-        ${CXX_BINDING_INCLUDE_DIR}
+        PUBLIC ${cxx_binding_include_dir}
     )
 
     # Create total target with alias with given namespace
@@ -114,30 +121,5 @@ function(add_library_rust)
     )
 
     # for end-user to link into project
-    add_library(${_NAMESPACE}::${_LIB_PATH_STEM} ALIAS ${_LIB_PATH_STEM}-total)
+    add_library(${namespace}::${_LIB_PATH_STEM} ALIAS ${_LIB_PATH_STEM}-total)
 endfunction(add_library_rust)
-
-function(_get_stem_name_of_path)
-    set(ONE_VALUE_KEYWORDS PATH)
-    cmake_parse_arguments(
-        _PATH_STEM
-        "${OPTIONS}"
-        "${ONE_VALUE_KEYWORDS}"
-        "${MULTI_VALUE_KEYWORDS}"
-        ${ARGN})
-
-    if("${_PATH_STEM_PATH}" STREQUAL "")
-        message(
-            FATAL_ERROR
-            "Path to get stem for is empty")
-    endif()
-
-    set(_PATH ${_PATH_STEM_PATH})
-
-    # Convert to list
-    string(REPLACE "/" ";" _PATH_AS_LIST ${_PATH})
-    list(LENGTH _PATH_AS_LIST LIST_LENGTH)
-    math(EXPR INDEX "${LIST_LENGTH} - 1" OUTPUT_FORMAT DECIMAL)
-    list(GET _PATH_AS_LIST "${INDEX}" _STEM)
-    set(STEM_OF_PATH ${_STEM} PARENT_SCOPE)
-endfunction(_get_stem_name_of_path)
