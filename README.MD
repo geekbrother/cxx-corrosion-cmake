@@ -1,6 +1,6 @@
 # Using [CXX](https://cxx.rs/) and [Corrosion](https://github.com/corrosion-rs/corrosion) in CMake project example
 
-This is a fork of the [rusty_cmake](https://github.com/trondhe/rusty_cmake) repository with the following modifications:
+This is a fork of the [rusty_cmake](https://github.com/trondhe/rusty_cmake) repository to use CXX and Corrosion in a CMake project with the following modifications:
 
  - Windows-related code is removed.
  - Get STEM function is removed in a favor of using one line `get_filename_component(_LIB_PATH_STEM ${lib_path} NAME)`.
