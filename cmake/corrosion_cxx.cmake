@@ -1,39 +1,8 @@
-# Detects cargo target architecture based on the Rustc compiler version
-function(detect_cargo_target_architecture)
-    find_program(RUST_compiler rustc)
-    find_program(Sed_PATH sed)
-
-    if(NOT RUST_compiler)
-        message(
-            FATAL "The rustc executable was not found")
-    endif()
-
-    if(NOT Sed_PATH)
-        message(
-            FATAL "The sed executable was not found")
-    endif()
-
-    execute_process(
-        COMMAND ${RUST_compiler} --version --verbose
-        COMMAND ${Sed_PATH} -n "s|host: ||p"
-        OUTPUT_VARIABLE DETECTED_CARGO_TARGET
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-
-    if("${DETECTED_CARGO_TARGET}" STREQUAL "")
-        message(FATAL_ERROR "Cannot detect target architecture for cargo build")
-    endif()
-
-    message("Cargo target architecture detected as: ${DETECTED_CARGO_TARGET}")
-    set(RUST_cargo_target ${DETECTED_CARGO_TARGET} PARENT_SCOPE)
-endfunction(detect_cargo_target_architecture)
-
 # Creates a target including rust lib and cxxbridge which is
 # named as ${NAMESPACE}::${_LIB_PATH_STEM}
 # <_LIB_PATH_STEM> must match the crate name:
 # "path/to/myrustcrate" -> "libmyrustcrate.a"
 function(add_library_rust)
-    detect_cargo_target_architecture()
     set(value_keywords PATH NAMESPACE CXX_BRIDGE_SOURCE_FILE)
     cmake_parse_arguments(
         rust_lib
@@ -42,6 +11,12 @@ function(add_library_rust)
         "${MULTI_value_KEYWORDS}"
         ${ARGN}
     )
+
+    if("${Rust_CARGO_TARGET}" STREQUAL "")
+        message(
+            FATAL_ERROR
+            "Rust_CARGO_TARGET is not detected and empty")
+    endif()
 
     if("${rust_lib_PATH}" STREQUAL "")
         message(
@@ -76,7 +51,7 @@ function(add_library_rust)
     message(STATUS "Library stem path: ${_LIB_PATH_STEM}")
     set(
         cxx_bridge_binary_folder
-        ${CMAKE_BINARY_DIR}/cargo/build/${RUST_cargo_target}/cxxbridge)
+        ${CMAKE_BINARY_DIR}/cargo/build/${Rust_CARGO_TARGET}/cxxbridge)
     set(
         common_header
         ${cxx_bridge_binary_folder}/rust/cxx.h)

@@ -2,8 +2,8 @@
 
 This is a fork of the [rusty_cmake](https://github.com/trondhe/rusty_cmake) repository with the following modifications:
 
- - Cargo target architecture detection.
  - Windows-related code is removed.
+ - Get STEM function is removed in a favor of using one line `get_filename_component(_LIB_PATH_STEM ${lib_path} NAME)`.
  - Simplify by using a simple one CMakeLists file.
  - [Example of using a different types](https://github.com/geekbrother/cxx-corrosion-cmake/blob/2a981b2ec34ee4d4ffe261b1be07691f74c31a04/src/main.cpp#L8) for arguments and returns.
  - [Example of using panics](https://github.com/geekbrother/cxx-corrosion-cmake/blob/2a981b2ec34ee4d4ffe261b1be07691f74c31a04/src/main.cpp#L15) in Rust + C++.
