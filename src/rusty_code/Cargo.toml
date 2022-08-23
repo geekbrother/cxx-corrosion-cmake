@@ -1,8 +1,8 @@
 [package]
 name = "rusty_code"
 version = "0.1.0"
-authors = ["Trond H Emaus <trondhe@gmail.com>"]
-edition = "2018"
+authors = ["Trond H Emaus <trondhe@gmail.com>", "Max Kalashnikoff <geekmaks@gmail.com>"]
+edition = "2021"
 
 [dependencies]
 cxx = "1.0"
