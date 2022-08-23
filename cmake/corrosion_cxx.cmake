@@ -75,10 +75,7 @@ function(add_library_rust)
         DEPENDS ${_LIB_PATH_STEM}-static
         COMMENT "Fixing cmake to find source files"
     )
-
-    add_library(${_LIB_PATH_STEM}_cxxbridge)
-    target_sources(${_LIB_PATH_STEM}_cxxbridge
-        PUBLIC
+    add_library(${_LIB_PATH_STEM}_cxxbridge
         ${common_header}
         ${binding_header}
         ${binding_source}
