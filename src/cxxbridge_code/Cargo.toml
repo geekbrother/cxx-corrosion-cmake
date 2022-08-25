@@ -1,11 +1,12 @@
 [package]
-name = "rusty_code"
+name = "cxxbridge_code"
 version = "0.1.0"
 authors = ["Trond H Emaus <trondhe@gmail.com>", "Max Kalashnikoff <geekmaks@gmail.com>"]
 edition = "2021"
 
 [dependencies]
 cxx = "1.0"
+anyhow = "1.0"
 
 [build-dependencies]
 cxx-build = "1.0"

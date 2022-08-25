@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 
-project(rusty_cmake CXX)
+project(cxx_cmake CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -16,9 +16,9 @@ target_sources(${PROJECT_NAME}
   src/main.cpp
 )
 
-add_library_rust(PATH src/rusty_code NAMESPACE my)
+add_library_rust(PATH src/cxxbridge_code NAMESPACE my)
 
 target_link_libraries(${PROJECT_NAME}
   PUBLIC
-  my::rusty_code
+  my::cxxbridge_code
 )
