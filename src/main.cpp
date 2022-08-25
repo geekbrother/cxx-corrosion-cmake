@@ -36,4 +36,24 @@ int main()
 	std::cout << lib_cxxbridge_panicked_function();
 
 	return 0;
+	// Return Rust Result Ok:
+	std::cout << "A Rust `Result Ok` value given via generated cxxbridge for lib_cxxbridge_return_result_ok:\n"
+
+	// Return Rust Result Error:
+	try
+	{
+		std::cout << "A Rust `Result Error` value given via generated cxxbridge for lib_cxxbridge_return_result_error:\n"
+							<< lib_cxxbridge_return_result_error() << std::endl;
+	}
+	catch (rust::Error e)
+	{
+		std::cerr << "Got an error from Rust function `Result`:" << std::endl;
+		std::cerr << e.what() << std::endl;
+	}
+
+	// Panic in a function call:
+	std::cout << "Testing a case of panic by running lib_cxxbridge_panicked_function:" << std::endl;
+	std::cout << lib_cxxbridge_panicked_function();
+
+	return 0;
 }
