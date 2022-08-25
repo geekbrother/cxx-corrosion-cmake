@@ -8,7 +8,7 @@ This is a fork of the [rusty_cmake](https://github.com/trondhe/rusty_cmake) repo
  - Simplify by using a simple one CMakeLists file for the project.
 
 ### Code examples to call Rust functions from C++:
-- [Example of using a different primitive types](https://github.com/geekbrother/cxx-corrosion-cmake/blob/2a981b2ec34ee4d4ffe261b1be07691f74c31a04/src/main.cpp#L8) for arguments and returns.
+- [Example of using a different primitive types](https://github.com/geekbrother/cxx-corrosion-cmake/blob/main/src/main.cpp) for arguments and returns.
 - Example of using [Rust Result type](https://cxx.rs/binding/result.html#returning-result-from-rust-to-c) and [Anyhow](https://docs.rs/anyhow/latest/anyhow/).
 - [Example of using panics](https://github.com/geekbrother/cxx-corrosion-cmake/blob/2a981b2ec34ee4d4ffe261b1be07691f74c31a04/src/main.cpp#L15) in Rust + C++.
 
