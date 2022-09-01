@@ -1,3 +1,2 @@
-src/cxxbridge_code/target
-build
-
+examples/src/cxxbridge_code/target
+examples/build
