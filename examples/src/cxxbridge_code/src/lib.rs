@@ -1,44 +1,62 @@
 use anyhow::Result;
+use lazy_static::lazy_static;
+use tokio::runtime::Runtime;
+pub mod apns;
+pub mod fcm;
 
 #[cxx::bridge]
 mod ffi {
     extern "Rust" {
-        // Primitive types:
-        fn lib_cxxbridge_bool(some: bool) -> bool;
-        fn lib_cxxbridge_integer(some: i32) -> i32;
-        fn lib_cxxbridge_string(some: &str) -> String;
-        // Return Result:
-        fn lib_cxxbridge_return_result_ok() -> Result<String>;
-        fn lib_cxxbridge_return_result_error() -> Result<String>;
-        // Panic in a function call:
-        fn lib_cxxbridge_panicked_function() -> String;
+        #[cxx_name = "sendNotifToAPNS"]
+        fn send_notif_to_apns(
+            certificate_path: &str,
+            certificate_password: &str,
+            device_token: &str,
+            message: &str,
+            sandbox: bool,
+        ) -> Result<u16>;
+
+        #[cxx_name = "sendNotifToFCM"]
+        fn send_notif_to_fcm(
+            fcm_api_key: &str,
+            device_registration_id: &str,
+            message_title: &str,
+            message_body: &str,
+        ) -> Result<u64>;
     }
 }
 
-pub fn lib_cxxbridge_bool(some: bool) -> bool {
-    if some {
-        return false;
-    }
-    true
+lazy_static! {
+  // Lazy static Tokio runtime initialization
+  pub static ref RUNTIME: Runtime = Runtime::new().unwrap();
 }
 
-pub fn lib_cxxbridge_integer(some: i32) -> i32 {
-    some + 10
+pub fn send_notif_to_apns(
+    certificate_path: &str,
+    certificate_password: &str,
+    device_token: &str,
+    message: &str,
+    sandbox: bool,
+) -> Result<u16> {
+    RUNTIME.block_on(apns::send_by_a2_client(
+        certificate_path,
+        certificate_password,
+        device_token,
+        message,
+        sandbox,
+    ))
 }
 
-pub fn lib_cxxbridge_string(some: &str) -> String {
-    String::from("Say hello to ".to_owned() + &some)
-}
-
-pub fn lib_cxxbridge_return_result_ok() -> Result<String> {
-    Ok(String::from("This is a string from result"))
-}
-
-pub fn lib_cxxbridge_return_result_error() -> Result<String> {
-    let some_string = std::fs::read_to_string("cluster.json")?;
-    Ok(some_string)
-}
-
-pub fn lib_cxxbridge_panicked_function() -> String {
-    panic!("Panicked_function in panic");
+pub fn send_notif_to_fcm(
+    fcm_api_key: &str,
+    device_registration_id: &str,
+    message_title: &str,
+    message_body: &str,
+) -> Result<u64> {
+    RUNTIME.block_on(fcm::send_by_fcm_client(
+        fcm_api_key,
+        device_registration_id,
+        message_title,
+        message_body,
+    ))
 }

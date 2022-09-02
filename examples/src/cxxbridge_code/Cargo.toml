@@ -5,7 +5,13 @@ authors = ["Trond H Emaus <trondhe@gmail.com>", "Max Kalashnikoff <geekmaks@gmai
 edition = "2021"
 
 [dependencies]
+tracing = "0.1"
+tokio = { version = "1.14", features = ["rt-multi-thread"]}
+lazy_static = "1.4"
+a2 = "0.6"
 cxx = "1.0"
+log = "0.4"
+fcm = "0.9"
 anyhow = "1.0"
 
 [build-dependencies]
