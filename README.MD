@@ -14,7 +14,7 @@ This `cmake/corrosion_cxx.cmake` can be imported in any CMake project to simplif
 
 Current solution is a battle-tested and `cmake/corrosion_cxx.cmake` file is used in a [Comm](https://comm.app) application development.
 
-# Examples
+# Current examples
 
 Example code is located in `examples` folder.
 
@@ -25,13 +25,16 @@ This repo example can be used as a sandbox playground for testing simple ideas o
 - Example of using [Rust Result type](https://cxx.rs/binding/result.html#returning-result-from-rust-to-c) and [Anyhow](https://docs.rs/anyhow/latest/anyhow/) in return to C++;
 - [Example of using panics](https://github.com/geekbrother/cxx-corrosion-cmake/blob/2a981b2ec34ee4d4ffe261b1be07691f74c31a04/src/main.cpp#L15) in Rust when calling from C++.
 
-## Dependencies
+# Dependencies
   - Linux or MacOS
   - CMake
   - Clang
   - [Corrosion](https://github.com/corrosion-rs/corrosion#installation)
   - Rustup
-## CMake
+
+# Build
+
+## Using CMake
 
 Run CMake and build commands in the `examples` folder: 
 
@@ -41,7 +44,7 @@ Then you can run the example app by calling:
 
 `build/cxx_cmake`.
 
-## Nix
+## In Nix
 
 If you are using [Nix](https://nixos.org/download.html) as a development environment you can use a nix shell with all dependencies:
 
@@ -49,15 +52,15 @@ If you are using [Nix](https://nixos.org/download.html) as a development environ
 nix-shell -p cmake -p clang -p rustup -p libiconv -p git --pure
 ```
 
-And then run build commands from CMake section above.
+And then run build commands from the CMake section above.
 
-## Docker
+## In Docker
 
 There is a Docker file to build and run the example app in Docker container.
-To build it run the build command from the `examples` folder:
+To build it run the build command from the root of the project:
 
 ```
-docker build . -t cxx-corrosion-cmake
+docker build . -t cxx-corrosion-cmake -f examples/Dockerfile
 ```
 
 Then you can run the example app by calling:
@@ -72,3 +75,7 @@ Create a packages in package managers to help tracking updates in the project in
 
  - Make it nix package
  - Make it vcpkg package
+
+# Sponsors ❤️
+
+[**Comm.app**](https://comm.app) is a crypto-native chat (think "Web3 Discord").

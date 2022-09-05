@@ -16,9 +16,9 @@ RUN cmake -Scorrosion -Bbuild -DCMAKE_BUILD_TYPE=Release
 RUN cmake --build build --config Release && cmake --install build --config Release
 
 # Compile example app
-COPY . /var/cxx_example
-WORKDIR /var/cxx_example
+COPY . /var/cxx_corrosion_cmake
+WORKDIR /var/cxx_corrosion_cmake/examples
 RUN rm -dfr build && cmake -B build . && make -C build -j4
 
 # Run the example app
-CMD ["/var/cxx_example/build/cxx_cmake"]
+CMD ["/var/cxx_corrosion_cmake/examples/build/cxx_cmake"]
