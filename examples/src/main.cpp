@@ -6,15 +6,27 @@
 int main()
 {
 
-	// Return Rust `Result` with Error:
+	// Call sendNotifToFCM
 	try
 	{
-		std::cout << "call:" << std::endl
-							<< sendNotifToFCM("hjhgj", "jhgjg", "jgjg", "jhgjhg") << std::endl;
+		std::cout << "Call sendNotifToFCM:" << std::endl;
+		std::cout << sendNotifToFCM("test", "test", "test", "test") << std::endl;
 	}
 	catch (rust::Error e)
 	{
-		std::cerr << "Got an error from Rust function `Result`:" << std::endl;
+		std::cerr << "Got an error from Rust sendNotifToFCM function `Result`:" << std::endl;
+		std::cerr << e.what() << std::endl;
+	}
+
+	// Call sendNotifToAPNS
+	try
+	{
+		std::cout << "Call sendNotifToAPNS:" << std::endl;
+		std::cout << sendNotifToAPNS("test", "test", "test", "test", false) << std::endl;
+	}
+	catch (rust::Error e)
+	{
+		std::cerr << "Got an error from Rust sendNotifToAPNS function `Result`:" << std::endl;
 		std::cerr << e.what() << std::endl;
 	}
 
