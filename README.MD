@@ -21,9 +21,9 @@ Example code is located in `examples` folder.
 This repo example can be used as a sandbox playground for testing simple ideas of the Rust library integration in the current C++ CMake project and as examples of the usage. 
 
 ### Code examples to call Rust functions from C++:
-- [Example of using a different primitive types](https://github.com/geekbrother/cxx-corrosion-cmake/blob/main/src/main.cpp) for arguments and returns;
-- Example of using [Rust Result type](https://cxx.rs/binding/result.html#returning-result-from-rust-to-c) and [Anyhow](https://docs.rs/anyhow/latest/anyhow/) in return to C++;
-- [Example of using panics](https://github.com/geekbrother/cxx-corrosion-cmake/blob/2a981b2ec34ee4d4ffe261b1be07691f74c31a04/src/main.cpp#L15) in Rust when calling from C++.
+- [Example of using a different primitive types](https://github.com/geekbrother/cxx-corrosion-cmake/blob/fe14ac52173737163e3ba427557187b9e4ba5d33/examples/src/main.cpp#L8) for arguments and returns;
+- [Example](https://github.com/geekbrother/cxx-corrosion-cmake/blob/fe14ac52173737163e3ba427557187b9e4ba5d33/examples/src/main.cpp#L21) of using [Rust Result type](https://cxx.rs/binding/result.html#returning-result-from-rust-to-c) and [Anyhow](https://docs.rs/anyhow/latest/anyhow/) in return to C++;
+- [Example of using panics](https://github.com/geekbrother/cxx-corrosion-cmake/blob/fe14ac52173737163e3ba427557187b9e4ba5d33/examples/src/main.cpp#L33) in Rust when calling from C++.
 
 # Dependencies
   - Linux or MacOS
