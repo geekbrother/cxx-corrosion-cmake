@@ -17,8 +17,8 @@ RUN cmake --build build --config Release && cmake --install build --config Relea
 
 # Compile example app
 COPY . /var/cxx_corrosion_cmake
-WORKDIR /var/cxx_corrosion_cmake/examples
+WORKDIR /var/cxx_corrosion_cmake
 RUN rm -dfr build && cmake -B build . && make -C build -j4
 
 # Run the example app
-CMD ["/var/cxx_corrosion_cmake/examples/build/cxx_cmake"]
+CMD ["/var/cxx_corrosion_cmake/build/cxx_cmake"]

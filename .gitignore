@@ -1,2 +1,5 @@
-examples/src/cxxbridge_code/target
-examples/build
+# Calling Rust from C++
+examples/rust-from-cpp/src/cxxbridge_code/target
+examples/rust-from-cpp/build
+
+# Calling C++ from Rust
