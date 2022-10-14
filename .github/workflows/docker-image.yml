@@ -15,4 +15,5 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --tag my-image-name:$(date +%s) -f examples/Dockerfile
+      working-directory: examples/rust-from-cpp
+      run: docker build . --tag my-image-name:$(date +%s) cxx-corrosion-cmake -f Dockerfile
