@@ -14,6 +14,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image
-      working-directory: examples/rust-from-cpp
-      run: docker build . --tag my-image-name:$(date +%s) -f Dockerfile
+    - name: Build the Docker image on examples
+      working-directory: .
+      run: docker build . --tag my-image-name:$(date +%s) -f examples/Dockerfile
