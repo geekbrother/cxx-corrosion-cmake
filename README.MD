@@ -51,7 +51,7 @@ Then you can run the example app by calling:
 If you are using [Nix](https://nixos.org/download.html) as a development environment you can use a nix shell with all dependencies:
 
 ```
-nix-shell -p cmake -p clang -p rustup -p libiconv -p git --pure
+nix-shell -p cmake -p clang -p rustup -p corrosion -p libiconv -p git --pure
 ```
 
 And then run build commands from the CMake section above.
@@ -59,10 +59,10 @@ And then run build commands from the CMake section above.
 ### In Docker
 
 There is a Docker file to build and run the example app in Docker container.
-To build it run the build command from the `examples/rust-from-cpp` folder of the project:
+To build it run the build command from the project root directory:
 
 ```
-docker build . -t cxx-corrosion-cmake -f Dockerfile
+docker build . -t cxx-corrosion-cmake -f examples/Dockerfile
 ```
 
 Then you can run the example app by calling:
